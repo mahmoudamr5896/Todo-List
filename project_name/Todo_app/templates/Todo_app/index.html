@@ -35,7 +35,9 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5 border text-center p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">Add New Task</h1>
+        <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
+           + Add a task
+        </h6>
         <form method="POST" action="{% url 'add_task' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
             {% csrf_token %}        
             <div style="position: relative;">
@@ -45,8 +47,8 @@
         </form>
         
         <div class="mt-5">
-            <h1 class="border text-center p-2" data-bs-toggle="collapse" href="#taskCollapse" aria-expanded="false" aria-controls="taskCollapse">Task List</h1>
-            <div class="collapse" id="taskCollapse">
+            <!-- <h1 class="border text-center p-2" data-bs-toggle="collapse" href="#taskCollapse" aria-expanded="false" aria-controls="taskCollapse">Task List</h1> -->
+            <div class="" id="taskCollapse">
                 <ul id="taskList" class="list-group">
                     {% for task in tasks %}
                         <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
@@ -59,7 +61,9 @@
             </div>
         </div>
         
-        <h1 class="mt-5 border text-center p-2" data-bs-toggle="collapse" href="#taskCollapse2" aria-expanded="false" aria-controls="taskCollapse2">Complete List</h1>
+        <h5 class="mt-5 border  p-2" data-bs-toggle="collapse" href="#taskCollapse2" aria-expanded="false" aria-controls="taskCollapse2">
+             > Complete
+            </h5>
         <ul id="completeList" class="list-group" class="collapse" id="taskCollapse2"></ul>
     </div>
 
