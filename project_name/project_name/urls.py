@@ -17,11 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from Todo_app.views import home , add_task ,task_list
+from Todo_app.views import home , add_task ,task_list ,mark_task_as_completed,mark_task_as_important
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home, name='home'), 
     path('add_task/', add_task, name='add_task'),
     path('task_list/', task_list, name='task_list'),
+    path('mark_completed/<int:task_id>/', mark_task_as_completed, name='mark_completed'),
+    path('mark_important/<int:task_id>/', mark_task_as_important, name='mark_importan'),
+
 ]
