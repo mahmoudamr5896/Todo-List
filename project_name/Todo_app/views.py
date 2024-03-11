@@ -52,3 +52,29 @@ def mark_task_as_important(request, task_id):
         task.save()
         return JsonResponse({'message': 'Task marked as important successfully'})
     
+
+
+
+def create_group(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        Group.objects.create(name=name)
+        return redirect('home')
+
+def create_tasklist(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        group_id = request.POST.get('group')
+        group = Group.objects.get(pk=group_id)  # Retrieve the Group object using its primary key
+        TaskList.objects.create(name=name, group=group)
+        return redirect('home')
+    
+
+def add_task(request, task_list_id):
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        Task.objects.create(description=description, task_list_id=task_list_id)
+        return redirect('home')  # Redirect to the homepage or any other page
+    else:
+        # Handle GET request if needed
+        pass

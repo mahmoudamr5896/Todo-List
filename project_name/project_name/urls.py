@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from Todo_app.views import home , add_task ,task_list ,mark_task_as_completed,mark_task_as_important
+from Todo_app.views import create_tasklist, home , add_task ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,5 +26,8 @@ urlpatterns = [
     path('task_list/', task_list, name='task_list'),
     path('mark_completed/<int:task_id>/', mark_task_as_completed, name='mark_completed'),
     path('mark_important/<int:task_id>/', mark_task_as_important, name='mark_importan'),
+    path('create-group/', create_group, name='create_group'),
+    path('create-tasklist/', create_tasklist, name='create_tasklist'),
+    path('add_task/<int:task_list_id>/', add_task, name='add_task'),
 
 ]
