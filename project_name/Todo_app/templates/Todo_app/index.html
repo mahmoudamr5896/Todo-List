@@ -10,43 +10,408 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-BsbJMDJjm0M8eLAk+rBL6U1krC4r30SwUmCpzYg3fmSpLhHDyRXWgVmzxF2rLo8E" crossorigin="anonymous">
     
     <style>
+
+        #sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #f8f9fa; 
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        #sidebar a:hover {
+            background-color: #ddd; 
+            color: #000; 
+        }
+
+        #sidebar .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: #333; 
+        }
+
+
         .completed {
             color: green;
-            text-decoration: line-through; /* Add line-through style for completed tasks */
+            text-decoration: line-through;
         }
 
         li {
             margin-bottom: 10px;
-            list-style-type: none; /* Remove bullet points from list items */
+            list-style-type: none; 
         }
 
         .task-list-item {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #f8f9fa; /* Light gray background color */
+            background-color: #f8f9fa; 
         }
 
         .complete-list-item {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #d4edda; /* Light green background color for completed tasks */
+            background-color: #d4edda; 
         }
+
+        nav.navbar {
+            background-color: #1E90FF; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        nav.navbar .navbar-brand {
+            color: White; 
+        }
+
+        .btn-primary {
+            background-color: #007bff; 
+            border-color: #007bff; 
+        }
+
+        .btn-outline-success {
+            color: #28a745; 
+            border-color: #28a745; 
+        }
+
+        .mt-5 {
+            margin-top: 2rem !important; /* Increased top margin */
+        }
+        #main-content {
+            transition: margin-left 0.5s, width 0.5s;
+        }
+
     </style>
 </head>
 <body>
+    <!-- Navigation bar -->
+   <nav class="navbar navbar-expand-lg navbar-light bg-beige" id="navBar">
     <div class="container">
-        <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
-           + Add a task
-        </h6>
-        <form method="POST" action="{% url 'add_task' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
-            {% csrf_token %}        
-            <div style="position: relative;">
-                <textarea id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;"></textarea>
-                <button type="submit" class="btn btn-primary" style="position: absolute; top: 0; right: 5px; height: 100%; min-width: 50px;">+</button>
+        <a class="navbar-brand" href="#">To Do</a>
+        <button class="navbar-toggler" type="button" onclick="openNav()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <form class="d-flex ms-auto">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+        <a href="#">Important</a>
+        <a href="#">Planned</a>
+        <a href="#">Assign to</a>
+        <a href="#">Tasks</a>
+        <div>
+            <h2>Create Group</h2>
+       <form method="post" action="{% url 'create_group' %}">
+        {% csrf_token %}
+        <label for="name">Group Name:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Create Group</button>
+    </form>
+        </div>
+        <div>
+        </div>
+        <div id="accordion">
+            {% for group in Group %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ group.id }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroup{{ group.id }}" aria-expanded="true" aria-controls="collapseGroup{{ group.id }}">
+                            {{ group.name }}
+                        </button>
+                        <div>
+                            <!-- <a href="{% url 'edit_group' group.id %}" class="btn btn-primary">Edit</a> -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#editGroupModal" data-groupid="{{ group.id }}" data-groupname="{{ group.name }}">Edit</button></li>
+                                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteGroupModal{{ group.id }}">Delete</button></li>
+                                  <li> <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createTaskListModal">
+                                    Create Task List
+                                </button></li>
+                                </ul>
+                              </div>
+                              <!-- Task List Creation Modal -->
+    <div class="modal fade" id="createTaskListModal" tabindex="-1" aria-labelledby="createTaskListModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createTaskListModalLabel">Create Task List</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'create_tasklist' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="taskListName" class="form-label">Task List Name</label>
+                            <input type="text" class="form-control" id="taskListName" name="name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="group" class="form-label">Group</label>
+                            <select name="group" id="group" class="form-control">
+                                {% for group in Group %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
+    </div>
+    
+                               <!-- Modal Massage To delete -->
+                            <div class="modal fade" id="deleteGroupModal{{ group.id }}" tabindex="-1" aria-labelledby="deleteGroupModalLabel{{ group.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteGroupModalLabel{{ group.id }}">Confirm Deletion</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this group?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form method="post" action="{% url 'delete_group' group.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="editGroupModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editGroupModalLabel">Edit Group</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="{% url 'edit_group' group.id %}">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                    <label for="groupName" class="form-label">Group Name</label>
+                                                    <input type="text" class="form-control" id="groupName" name="name" value="{{ group.name }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                    </h2>
+                    <div id="collapseGroup{{ group.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ group.id }}" data-bs-parent="#accordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                {% for task_list in group.tasklist_set.all %}
+                                    <li class="list-group-item">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTaskList{{ task_list.id }}" aria-expanded="false" aria-controls="collapseTaskList{{ task_list.id }}">
+                                            {{ task_list.name }}
+                                        </button>
+                                        <div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
+                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskListModal{{ task_list.id }}" data-tasklistid="{{ task_list.id }}" data-tasklistname="{{ task_list.name }}">Edit</button></li>
+                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteTaskListModal{{ task_list.id }}">Delete</button></li>
+                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createTaskModal{{ task_list.id }}">Create Task</button></li>
+                                                </ul>
+                                            </div>                       
+                                            <!-- Create Task Modal -->
+                                            <div class="modal fade" id="createTaskModal{{ task_list.id }}" tabindex="-1" aria-labelledby="createTaskModalLabel{{ task_list.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="createTaskModalLabel{{ task_list.id }}">Create New Task</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" action="{% url 'add_task' task_list.id %}">
+                                                                {% csrf_token %}
+                                                                <div class="mb-3">
+                                                                    <label for="taskDescription" class="form-label">Task Description:</label>
+                                                                    <input type="text" class="form-control" id="taskDescription" name="description" required>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Add Task</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Button to trigger modal for deleting task list -->
+                                        <!-- Edit Task List Modal -->
+                                            <div class="modal fade" id="editTaskListModal{{ task_list.id }}" tabindex="-1" aria-labelledby="editTaskListModalLabel{{ task_list.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editTaskListModalLabel{{ task_list.id }}">Edit Task List</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
+                                                                {% csrf_token %}
+                                                                <div class="mb-3">
+                                                                    <label for="taskListName" class="form-label">Task List Name</label>
+                                                                    <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Delete Task List Modal -->
+                                            <div class="modal fade" id="deleteTaskListModal{{ task_list.id }}" tabindex="-1" aria-labelledby="deleteTaskListModalLabel{{ task_list.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="deleteTaskListModalLabel{{ task_list.id }}">Delete Task List</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                                            </form>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-collapse collapse" id="collapseTaskList{{ task_list.id }}">
+                                            <ul class="list-group">
+                                                {% for task in task_list.task_set.all %}
+                                                    <li class="list-group-item">
+                                                        {{ task.description }}
+                                                        {% if task.completed %}
+                                                            <span class="badge bg-success">Completed</span>
+                                                        {% else %}
+                                                            <span class="badge bg-warning text-dark">Pending</span>
+                                                        {% endif %}
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                Actions
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ task.id }}">Edit</button></li>
+                                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ task.id }}">Delete</button></li>
+                                                            </ul>
+                                                        </div>
+                                                        
+                                                    </li>
+                                                    <!-- Edit Task Modal -->
+                                                    <div class="modal fade" id="editTaskModal{{ task.id }}" tabindex="-1" aria-labelledby="editTaskModalLabel{{ task.id }}" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="editTaskModalLabel{{ task.id }}">Edit Task</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <!-- Edit Task Form -->
+                                                                    <form method="post" action="{% url 'edit_task' group.id task_list.id task.id %}">
+                                                                        {% csrf_token %}
+                                                                        <div class="mb-3">
+                                                                            <label for="taskDescription" class="form-label">Task Description</label>
+                                                                            <input type="text" class="form-control" id="taskDescription" name="description" value="{{ task.description }}">
+                                                                        </div>
+                                                                        <div class="mb-3 form-check">
+                                                                            <!-- <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}> -->
+                                                                            <!-- <label class="form-check-label" for="completedCheckbox">Completed</label> -->
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Delete Task Modal -->
+                                                    <div class="modal fade" id="deleteTaskModal{{ task.id }}" tabindex="-1" aria-labelledby="deleteTaskModalLabel{{ task.id }}" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="deleteTaskModalLabel{{ task.id }}">Delete Task</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p>Are you sure you want to delete the task "{{ task.description }}"?</p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <!-- Delete Task Form -->
+                                                                    <form method="post" action="{% url 'delete_task' group.id task_list.id task.id %}">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                                    </form>
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+   <br/>
+    <div class="container"  id="main-content">
+        <button class="btn btn-primary" onclick="openNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span>Welcome<span/>
+            <div/>
+            <div class="container">
+                <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
+                   + Add a task
+                </h6>
+                <form method="POST" action="{% url 'add_task' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
+                    {% csrf_token %}        
+                    <div style="position: relative;">
+                        <input id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;" placeholder="Add a task">
+                        <button type="submit" class="btn btn-primary" style="position: absolute; top: 0; right: 5px; height: 100%; min-width: 50px;">+</button>
+                    </div>
+                </form>
         <div class="mt-5">
             <div class="" id="taskCollapse">
                 <ul id="taskList" class="list-group">
@@ -66,7 +431,7 @@
         </div>
         
         <h5 class="mt-5 border  p-2" data-bs-toggle="collapse" href="#taskCollapse2" aria-expanded="false" aria-controls="taskCollapse2">
-             > Complete 
+             Complete 
         </h5>
         <ul class="list-group collapse" id="taskCollapse2">
             {% for task in tasks_Completed %}
@@ -94,290 +459,26 @@
 
 
     </div> 
-    <div>
-        <h2>Create Group</h2>
-        <form method="post" action="{% url 'create_group' %}">
-                {% csrf_token %}
-                <label for="group_name">Group Name:</label>
-                <input type="text" id="group_name" name="name" required>
-                <button type="submit">Create Group</button>
-            </form>
-    </div>
-    <div>
-        <!-- <h2>Create Task List</h2>
-        <form method="post" action="{% url 'create_tasklist' %}">
-            {% csrf_token %}
-            <input type="text" name="name">
-        
-            <select name="group" id="group">
-                {% for group in Group %}
-                    <option value="{{ group.id }}">{{ group.name }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Create</button>
-        </form>
-         -->
-    </div>
-    <div id="accordion">
-        {% for group in Group %}
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading{{ group.id }}">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroup{{ group.id }}" aria-expanded="true" aria-controls="collapseGroup{{ group.id }}">
-                        {{ group.name }}
-                    </button>
-                    <div>
-                        <!-- <a href="{% url 'edit_group' group.id %}" class="btn btn-primary">Edit</a> -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                              Actions
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#editGroupModal" data-groupid="{{ group.id }}" data-groupname="{{ group.name }}">Edit</button></li>
-                              <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteGroupModal{{ group.id }}">Delete</button></li>
-                              <li> <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createTaskListModal">
-                                Create Task List
-                            </button></li>
-                            </ul>
-                          </div>
-                          <!-- Task List Creation Modal -->
-<div class="modal fade" id="createTaskListModal" tabindex="-1" aria-labelledby="createTaskListModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createTaskListModalLabel">Create Task List</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'create_tasklist' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="taskListName" class="form-label">Task List Name</label>
-                        <input type="text" class="form-control" id="taskListName" name="name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="group" class="form-label">Group</label>
-                        <select name="group" id="group" class="form-control">
-                            {% for group in Group %}
-                                <option value="{{ group.id }}">{{ group.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-                           <!-- Modal Massage To delete -->
-                        <div class="modal fade" id="deleteGroupModal{{ group.id }}" tabindex="-1" aria-labelledby="deleteGroupModalLabel{{ group.id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteGroupModalLabel{{ group.id }}">Confirm Deletion</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Are you sure you want to delete this group?</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <form method="post" action="{% url 'delete_group' group.id %}">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                        <div class="modal fade" id="editGroupModal" tabindex="-1" aria-labelledby="editGroupModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editGroupModalLabel">Edit Group</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="post" action="{% url 'edit_group' group.id %}">
-                                            {% csrf_token %}
-                                            <div class="mb-3">
-                                                <label for="groupName" class="form-label">Group Name</label>
-                                                <input type="text" class="form-control" id="groupName" name="name" value="{{ group.name }}">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        </form>
-                                    </div>
-                                </div>
-                        </div>
-                        </div>
-                    </div>
-                </h2>
-                <div id="collapseGroup{{ group.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ group.id }}" data-bs-parent="#accordion">
-                    <div class="accordion-body">
-                        <ul class="list-group">
-                            {% for task_list in group.tasklist_set.all %}
-                                <li class="list-group-item">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTaskList{{ task_list.id }}" aria-expanded="false" aria-controls="collapseTaskList{{ task_list.id }}">
-                                        {{ task_list.name }}
-                                    </button>
-                                    <div>
-                                        <div class="dropdown">
-                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                Actions
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
-                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskListModal{{ task_list.id }}" data-tasklistid="{{ task_list.id }}" data-tasklistname="{{ task_list.name }}">Edit</button></li>
-                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteTaskListModal{{ task_list.id }}">Delete</button></li>
-                                                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createTaskModal{{ task_list.id }}">Create Task</button></li>
-                                            </ul>
-                                        </div>                       
-                                        <!-- Create Task Modal -->
-                                        <div class="modal fade" id="createTaskModal{{ task_list.id }}" tabindex="-1" aria-labelledby="createTaskModalLabel{{ task_list.id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="createTaskModalLabel{{ task_list.id }}">Create New Task</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form method="post" action="{% url 'add_task' task_list.id %}">
-                                                            {% csrf_token %}
-                                                            <div class="mb-3">
-                                                                <label for="taskDescription" class="form-label">Task Description:</label>
-                                                                <input type="text" class="form-control" id="taskDescription" name="description" required>
-                                                            </div>
-                                                            <button type="submit" class="btn btn-primary">Add Task</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Button to trigger modal for deleting task list -->
-                                    <!-- Edit Task List Modal -->
-                                        <div class="modal fade" id="editTaskListModal{{ task_list.id }}" tabindex="-1" aria-labelledby="editTaskListModalLabel{{ task_list.id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="editTaskListModalLabel{{ task_list.id }}">Edit Task List</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
-                                                            {% csrf_token %}
-                                                            <div class="mb-3">
-                                                                <label for="taskListName" class="form-label">Task List Name</label>
-                                                                <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
-                                                            </div>
-                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Delete Task List Modal -->
-                                        <div class="modal fade" id="deleteTaskListModal{{ task_list.id }}" tabindex="-1" aria-labelledby="deleteTaskListModalLabel{{ task_list.id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="deleteTaskListModalLabel{{ task_list.id }}">Delete Task List</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                                        </form>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="accordion-collapse collapse" id="collapseTaskList{{ task_list.id }}">
-                                        <ul class="list-group">
-                                            {% for task in task_list.task_set.all %}
-                                                <li class="list-group-item">
-                                                    {{ task.description }}
-                                                    {% if task.completed %}
-                                                        <span class="badge bg-success">Completed</span>
-                                                    {% else %}
-                                                        <span class="badge bg-warning text-dark">Pending</span>
-                                                    {% endif %}
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Actions
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ task.id }}">Edit</button></li>
-                                                            <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ task.id }}">Delete</button></li>
-                                                        </ul>
-                                                    </div>
-                                                    
-                                                </li>
-                                                <!-- Edit Task Modal -->
-                                                <div class="modal fade" id="editTaskModal{{ task.id }}" tabindex="-1" aria-labelledby="editTaskModalLabel{{ task.id }}" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="editTaskModalLabel{{ task.id }}">Edit Task</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <!-- Edit Task Form -->
-                                                                <form method="post" action="{% url 'edit_task' group.id task_list.id task.id %}">
-                                                                    {% csrf_token %}
-                                                                    <div class="mb-3">
-                                                                        <label for="taskDescription" class="form-label">Task Description</label>
-                                                                        <input type="text" class="form-control" id="taskDescription" name="description" value="{{ task.description }}">
-                                                                    </div>
-                                                                    <div class="mb-3 form-check">
-                                                                        <!-- <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}> -->
-                                                                        <!-- <label class="form-check-label" for="completedCheckbox">Completed</label> -->
-                                                                    </div>
-                                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Delete Task Modal -->
-                                                <div class="modal fade" id="deleteTaskModal{{ task.id }}" tabindex="-1" aria-labelledby="deleteTaskModalLabel{{ task.id }}" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="deleteTaskModalLabel{{ task.id }}">Delete Task</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p>Are you sure you want to delete the task "{{ task.description }}"?</p>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <!-- Delete Task Form -->
-                                                                <form method="post" action="{% url 'delete_task' group.id task_list.id task.id %}">
-                                                                    {% csrf_token %}
-                                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                                </form>
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   
+   
     <script>
+    function openNav() {
+            document.getElementById("sidebar").style.width = "250px";  
+            document.getElementById("main-content").style.marginLeft = "250px";
+            document.getElementById("main-content").style.width = "calc(100% - 250px)";
+            document.getElementById("navBar").style.marginLeft = "250px";
+            document.getElementById("navBar").style.width = "calc(100% - 250px)";
+        }
+
+        function closeNav() {
+            document.getElementById("sidebar").style.width = "0"; 
+            document.getElementById("main-content").style.marginLeft = "10%";
+            document.getElementById("main-content").style.width = "100%";
+            document.getElementById("navBar").style.marginLeft = "0"; 
+            document.getElementById("navBar").style.width = "100%"; 
+        }
+        
+
         function markAsComplete(taskId) {
             var taskElement = document.getElementById('task' + taskId);
             taskElement.classList.add('completed');
@@ -413,5 +514,6 @@
                 });
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
