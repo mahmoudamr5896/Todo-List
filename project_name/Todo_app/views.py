@@ -25,7 +25,7 @@ def home(request):
 
 
 
-def add_task(request):
+def add_task2(request):
     if request.method == 'POST':
         description = request.POST.get('description')
         if description: 
@@ -111,7 +111,7 @@ def delete_tasklist(request, tasklist_id):
     task_list = get_object_or_404(TaskList, id=tasklist_id)
     if request.method == 'POST':
         task_list.delete()
-    return redirect('home')  # Redirect to the homepage or any other page
+    return redirect('home')  
 
 
 # def edit_task(request, task_id):
@@ -144,7 +144,6 @@ def delete_task(request, group_id, list_id, task_id):
     if request.method == 'POST':
         task.delete()
         return redirect('home')  # Redirect to appropriate page
-    return render(request, 'delete_task.html', {'task': task})
 
 def create_task(request, task_list_id):
     task_list = TaskList.objects.get(id=task_list_id)
@@ -152,3 +151,9 @@ def create_task(request, task_list_id):
         description = request.POST.get('description')
         Task.objects.create(task_list=task_list, description=description)
         return redirect('home')  
+
+def mark_as_incomplete(request, task_id):
+    task = Task.objects.get(id=task_id)
+    task.completed = False
+    task.save()
+    return redirect('home')
