@@ -11,7 +11,7 @@ class Group(models.Model):
 
 class TaskList(models.Model):
     name = models.CharField(max_length=100)
-    group = models.ForeignKey(Group, on_delete=models.PROTECT,blank=True, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE,blank=True, null=True)
 
     def __str__(self):
         return self.name
