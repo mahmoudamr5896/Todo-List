@@ -70,11 +70,12 @@
         </h5>
         <ul class="list-group collapse" id="taskCollapse2">
             {% for task in tasks_Completed %}
-                <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
-                    {{ task.description }}
-                    <small class="text-muted">{{ task.created_at }}</small>
-                </li>
-            {% endfor %}
+            <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
+                <input type="radio" name="incompleteTask" onclick="markAsIncomplete('{{ task.id }}')" class="form-check-input me-2">
+                {{ task.description }}
+                <small class="text-muted">{{ task.created_at }}</small>
+            </li>
+        {% endfor %}
         </ul>
         <ul id="completeList" class="list-group collapse" id="taskCollapse2"></ul>
           <div>
@@ -140,34 +141,34 @@
                             </ul>
                           </div>
                           <!-- Task List Creation Modal -->
-<div class="modal fade" id="createTaskListModal" tabindex="-1" aria-labelledby="createTaskListModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createTaskListModalLabel">Create Task List</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'create_tasklist' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="taskListName" class="form-label">Task List Name</label>
-                        <input type="text" class="form-control" id="taskListName" name="name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="group" class="form-label">Group</label>
-                        <select name="group" id="group" class="form-control">
-                            {% for group in Group %}
-                                <option value="{{ group.id }}">{{ group.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+                                    <div class="modal fade" id="createTaskListModal" tabindex="-1" aria-labelledby="createTaskListModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="createTaskListModalLabel">Create Task List</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" action="{% url 'create_tasklist' %}">
+                                                        {% csrf_token %}
+                                                        <div class="mb-3">
+                                                            <label for="taskListName" class="form-label">Task List Name</label>
+                                                            <input type="text" class="form-control" id="taskListName" name="name">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="group" class="form-label">Group</label>
+                                                            <select name="group" id="group" class="form-control">
+                                                                {% for group in Group %}
+                                                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Create</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                            <!-- Modal Massage To delete -->
                         <div class="modal fade" id="deleteGroupModal{{ group.id }}" tabindex="-1" aria-labelledby="deleteGroupModalLabel{{ group.id }}" aria-hidden="true">
@@ -378,6 +379,21 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
+        function markAsIncomplete(taskId) {
+            fetch(`/mark-as-incomplete/${taskId}/`, {
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    console.error('Failed to mark task as incomplete.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         function markAsComplete(taskId) {
             var taskElement = document.getElementById('task' + taskId);
             taskElement.classList.add('completed');
