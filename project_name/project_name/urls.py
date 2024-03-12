@@ -18,12 +18,12 @@ from asyncio import create_task
 from django.contrib import admin
 from django.urls import path
 
-from Todo_app.views import create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
+from Todo_app.views import create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2 ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home, name='home'), 
-    path('add_task/', add_task, name='add_task'),
+    path('add_task2/', add_task2, name='add_task2'),
     path('task_list/', task_list, name='task_list'),
     path('mark_completed/<int:task_id>/', mark_task_as_completed, name='mark_completed'),
     path('mark_important/<int:task_id>/', mark_task_as_important, name='mark_importan'),

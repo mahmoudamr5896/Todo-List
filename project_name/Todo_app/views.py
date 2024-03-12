@@ -25,7 +25,7 @@ def home(request):
 
 
 
-def add_task(request):
+def add_task2(request):
     if request.method == 'POST':
         description = request.POST.get('description')
         if description: 

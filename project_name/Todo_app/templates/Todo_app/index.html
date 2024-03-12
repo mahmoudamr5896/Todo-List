@@ -40,7 +40,7 @@
         <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
            + Add a task
         </h6>
-        <form method="POST" action="{% url 'add_task' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
+        <form method="POST" action="{% url 'add_task2' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
             {% csrf_token %}        
             <div style="position: relative;">
                 <textarea id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;"></textarea>
