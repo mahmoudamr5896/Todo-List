@@ -10,7 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-BsbJMDJjm0M8eLAk+rBL6U1krC4r30SwUmCpzYg3fmSpLhHDyRXWgVmzxF2rLo8E" crossorigin="anonymous">
     
     <style>
+<<<<<<< HEAD
 
+=======
+>>>>>>> Mahmoud-Amr-Hassan
         #sidebar {
             height: 100%;
             width: 0;
@@ -24,7 +27,10 @@
             padding-top: 60px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Mahmoud-Amr-Hassan
         #sidebar a {
             padding: 10px 15px;
             text-decoration: none;
@@ -33,12 +39,18 @@
             display: block;
             transition: 0.3s;
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Mahmoud-Amr-Hassan
         #sidebar a:hover {
             background-color: #ddd; 
             color: #000; 
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Mahmoud-Amr-Hassan
         #sidebar .close-btn {
             position: absolute;
             top: 0;
@@ -47,30 +59,54 @@
             margin-left: 50px;
             color: #333; 
         }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> Mahmoud-Amr-Hassan
         .completed {
             color: green;
             text-decoration: line-through;
         }
-
         li {
             margin-bottom: 10px;
             list-style-type: none; 
         }
-
         .task-list-item {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f8f9fa; 
         }
-
         .complete-list-item {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #d4edda; 
+<<<<<<< HEAD
+=======
+        }
+        nav.navbar {
+            background-color: #1E90FF; 
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        nav.navbar .navbar-brand {
+            color: White; 
+        }
+        .btn-primary {
+            background-color: #007bff; 
+            border-color: #007bff; 
+        }
+        .btn-outline-success {
+            color: #28a745; 
+            border-color: #28a745; 
+        }
+        .mt-5 {
+            margin-top: 2rem !important; 
+        }
+        #main-content {
+            transition: margin-left 0.5s, width 0.5s;
+>>>>>>> Mahmoud-Amr-Hassan
         }
 
         nav.navbar {
@@ -102,8 +138,186 @@
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <!-- Navigation bar -->
    <nav class="navbar navbar-expand-lg navbar-light bg-beige" id="navBar">
+=======
+    <nav class="navbar navbar-expand-lg navbar-light bg-beige" id="navBar">
+        <div class="container">
+            <a class="navbar-brand" href="#">To Do</a>
+            <button class="navbar-toggler" type="button" onclick="openNav()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <form class="d-flex ms-auto">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+        <a href="{% url 'important_tasks' %}"> Important </a>
+        <a href="{% url 'home' %}"> Tasks</a>
+        <div class="container-fluid">
+            <button class="btn btn-white"
+            type="button" 
+            data-bs-toggle="collapse"
+            data-bs-target="#createGroupForm"
+            aria-expanded="false" 
+            aria-controls="createGroupForm">
+            Create Group
+            </button>
+            <div class="collapse" id="createGroupForm">
+                <form method="post" action="{% url 'create_group' %}">
+                    {% csrf_token %}
+                    <label for="group_name">Group Name:</label>
+                    <input type="text" id="group_name" name="name" required><br>
+                    <button type="submit" class="btn">Create Group</button>
+                </form>
+          </div>
+        <div id="accordion"  >
+            {% for group in Group %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ group.id }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroup{{ group.id }}" aria-expanded="true" aria-controls="collapseGroup{{ group.id }}">
+                            {{ group.name }}
+                        </button>
+                        <div>
+                            <!-- <a href="{% url 'edit_group' group.id %}" class="btn btn-primary">Edit</a> -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                  Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Edit</button></li>
+                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Delete</button></li>
+                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Create Task List</button></li>
+    
+                                </ul>
+                              </div>
+                              <div class="collapse" id="deleteGroupCollapse{{ group.id }}">
+                                <div class="card card-body">
+                                    <p>Are you sure you want to delete this group?</p>
+                                    <form method="post" action="{% url 'delete_group' group.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Cancel</button>
+                                    </form>
+                                </div>
+                              </div>
+                              <div class="collapse" id="editGroupCollapse{{ group.id }}">
+                                <div class="card card-body">
+                                    <form method="post" action="{% url 'edit_group' group.id %}">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="groupName" class="form-label">Group Name</label>
+                                            <input type="text" class="form-control" id="groupName" name="name" value="{{ group.name }}">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="collapse" id="createTaskListCollapse{{ group.id }}">
+                                <div class="card card-body">
+                                    <form method="post" action="{% url 'create_tasklist' %}">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="taskListName" class="form-label">Task List Name</label>
+                                            <input type="text" class="form-control" id="taskListName" name="name">
+                                        </div>
+                                        <input type="hidden" name="group" value="{{ group.id }}">
+                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                    </h2>
+                    <div id="collapseGroup{{ group.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ group.id }}" data-bs-parent="#accordion">
+                        <div class="accordion-body">
+                            <ul class="list-group">
+                                {% for task_list in group.tasklist_set.all %}
+                                    <li class="list-group-item">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTaskList{{ task_list.id }}" aria-expanded="false" aria-controls="collapseTaskList{{ task_list.id }}">
+                                            {{ task_list.name }}
+                                        </button>
+                                        <div>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
+                                                        <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Edit</button></li>
+                                                        <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Delete</button></li>
+                                                    </ul>   
+                                            </div>  
+                                            <div class="collapse" id="editTaskListCollapse{{ task_list.id }}">
+                                                <div class="card card-body">
+                                                    <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
+                                                        {% csrf_token %}
+                                                        <div class="mb-3">
+                                                            <label for="taskListName" class="form-label">Task List Name</label>
+                                                            <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Cancel</button>
+                                                    </form>
+                                                </div>
+                                            </div>                 
+                                            <div class="collapse" id="deleteTaskListCollapse{{ task_list.id }}">
+                                                <div class="card card-body">
+                                                    <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
+                                                    <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Cancel</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+    <!--                                                              
+          
+                                            <div class="modal fade" id="createTaskModal{{ task_list.id }}" tabindex="-1" aria-labelledby="createTaskModalLabel{{ task_list.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="createTaskModalLabel{{ task_list.id }}">Create New Task</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form method="post" action="{% url 'add_task' task_list.id %}">
+                                                                {% csrf_token %}
+                                                                <div class="mb-3">
+                                                                    <label for="taskDescription" class="form-label">Task Description:</label>
+                                                                    <input type="text" class="form-control" id="taskDescription" name="description" required>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary">Add Task</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+    <div class="container"  id="main-content">
+        <button class="btn btn-primary" onclick="openNav()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span>Welcome<span/>
+    <div/>
+    {% block content %}
+>>>>>>> Mahmoud-Amr-Hassan
     <div class="container">
         <a class="navbar-brand" href="#">To Do</a>
         <button class="navbar-toggler" type="button" onclick="openNav()">
@@ -451,23 +665,10 @@
         {% endfor %}
         </ul>
         <ul id="completeList" class="list-group collapse" id="taskCollapse2"></ul>
-          <div>
-    <h5 class="mt-5 border  p-2" >
-        isImportant
-        </h5>
-        <ul class="list-group " id="task2">
-        {% for task in  tasks_importnat %}
-            <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
-                {{ task.description }}
-                <small class="text-muted">{{ task.created_at }}</small>
-            </li>
-        {% endfor %}
     </ul>
          </div>
- 
-
-
     </div>     
+<<<<<<< HEAD
 <div class="container-fluid">
         <button class="btn btn-white"
         type="button" 
@@ -617,6 +818,28 @@
     </div>
 </div>
     <!-- <script>
+=======
+    {% endblock content %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+
+        function openNav() {
+            document.getElementById("sidebar").style.width = "250px";  
+            document.getElementById("main-content").style.marginLeft = "250px";
+            document.getElementById("main-content").style.width = "calc(100% - 250px)";
+            document.getElementById("navBar").style.marginLeft = "250px";
+            document.getElementById("navBar").style.width = "calc(100% - 250px)";
+        }
+
+        function closeNav() {
+            document.getElementById("sidebar").style.width = "0"; 
+            document.getElementById("main-content").style.marginLeft = "10%";
+            document.getElementById("main-content").style.width = "100%";
+            document.getElementById("navBar").style.marginLeft = "0"; 
+            document.getElementById("navBar").style.width = "100%"; 
+        }
+
+>>>>>>> Mahmoud-Amr-Hassan
         function markAsIncomplete(taskId) {
             fetch(`/mark-as-incomplete/${taskId}/`, {
             })
@@ -642,6 +865,8 @@
             fetch('/mark_completed/' + taskId + '/')
                 .then(response => {
                     if (response.ok) {
+                        location.reload();
+
                         console.log('Task marked as completed successfully');
                     } else {
                         console.error('Failed to mark task as completed');
@@ -668,6 +893,7 @@
                     console.error('Error:', error);
                 });
         }
+<<<<<<< HEAD
     </script> -->
     <!-- <div id="accordion">
         {% for group in Group %}
@@ -967,5 +1193,9 @@
     </script>  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+=======
+    </script>
+
+>>>>>>> Mahmoud-Amr-Hassan
 </body>
 </html>
