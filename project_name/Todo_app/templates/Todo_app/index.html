@@ -352,6 +352,8 @@
             fetch('/mark_completed/' + taskId + '/')
                 .then(response => {
                     if (response.ok) {
+                        location.reload();
+
                         console.log('Task marked as completed successfully');
                     } else {
                         console.error('Failed to mark task as completed');
@@ -367,6 +369,8 @@
             fetch('/mark_important/' + taskId + '/')
                 .then(response => {
                     if (response.ok) {
+                        location.reload();
+
                         console.log('Task marked as important successfully');
                     } else {
                         console.error('Failed to mark task as important');
