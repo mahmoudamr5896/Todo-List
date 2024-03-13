@@ -17,6 +17,7 @@ Including another URLconf
 from asyncio import create_task
 from django.contrib import admin
 from django.urls import path
+from Todo_app import views
 
 from Todo_app.views import create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2, mark_as_incomplete ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
 
@@ -36,6 +37,7 @@ urlpatterns = [
     path('delete-tasklist/<int:tasklist_id>/', delete_tasklist, name='delete_tasklist'),
     # path('edit-task/<int:task_id>/', edit_task, name='edit_task'),
     # path('delete-task/<int:task_id>/', delete_task, name='delete_task'),
+    path('unmark_completed/<int:task_id>/', views.unmark_completed, name='unmark_completed'),
     path('group/<int:group_id>/list/<int:list_id>/task/<int:task_id>/edit/', edit_task, name='edit_task'),
     path('group/<int:group_id>/list/<int:list_id>/task/<int:task_id>/delete/', delete_task, name='delete_task'),
     path('create-task/<int:id>/', create_task, name='create_task'),

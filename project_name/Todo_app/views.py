@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
-
+from django.template.loader import render_to_string
 # Create your views here.
 from django.shortcuts import render, redirect
 
@@ -33,17 +33,35 @@ def add_task2(request):
             return redirect('home')  
     return render(request, 'Todo_app/add_task.html')
 
+def unmark_completed(request, task_id):
+    try:
+        task = Task.objects.get(id=task_id)
+        task.completed = False
+        task.save()
+        return JsonResponse({'success': True})
+    except Task.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Task not found'})
+
 
 def task_list(request):
     tasks = Task.objects.all()
     return render(request, 'Todo_app/task_list.html', {'tasks': tasks})
 
-
 def mark_task_as_completed(request, task_id):
-    task = Task.objects.get(id=task_id)
-    task.completed = True
-    task.save()
-    return JsonResponse({'message': 'Task marked as completed successfully'})
+    try:
+        task = Task.objects.get(id=task_id)
+        task.completed = True
+        task.save()
+        
+        # Retrieve all completed tasks
+        tasks_completed = Task.objects.filter(completed=True)
+        
+        # Render the HTML template for the completed tasks
+        html_content = render_to_string('completed_tasks.html', {'tasks_completed': tasks_completed})
+        
+        return JsonResponse({'success': True, 'html_content': html_content})
+    except Task.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Task not found'})
 
 def mark_task_as_important(request, task_id):
         task = Task.objects.get(id=task_id)
@@ -67,14 +85,14 @@ def create_tasklist(request):
         return redirect('home')
     
 
-def add_task(request, task_list_id):
-    if request.method == 'POST':
-        description = request.POST.get('description')
-        Task.objects.create(description=description, task_list_id=task_list_id)
-        return redirect('home')  # Redirect to the homepage or any other page
-    else:
-        # Handle GET request if needed
-        pass
+# def add_task(request, task_list_id):
+#     if request.method == 'POST':
+#         description = request.POST.get('description')
+#         Task.objects.create(description=description, task_list_id=task_list_id)
+#         return redirect('home')  # Redirect to the homepage or any other page
+#     else:
+#         # Handle GET request if needed
+#         pass
 
 from django.shortcuts import get_object_or_404, redirect
 from .models import Group
