@@ -1,0 +1,41 @@
+{% extends "Todo_app/index.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Important Tasks</title>
+    <!-- Add any necessary CSS links or styles here -->
+</head>
+<body>
+    {% block content %}
+    <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
+        + Add an important task
+    </h6>
+    <form method="POST" action="{% url 'important_tasks' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
+        {% csrf_token %}        
+        <div style="position: relative;">
+            <textarea id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;"></textarea>
+            <input type="hidden" name="important" value="True">
+            <button type="submit" class="btn btn-primary" style="position: absolute; top: 0; right: 5px; height: 100%; min-width: 50px;">+</button>
+        </div>
+    </form>
+
+    <div class="container mt-5"> <!-- Added mt-5 class here -->
+        <h2>Important Tasks</h2>
+        <ul class="list-group"> <!-- Added list-group class here -->
+            {% for task in tasks_important %}
+                <li class="list-group-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}"> <!-- Changed class name to list-group-item -->
+                    <input type="checkbox" onclick="markAsComplete('{{ task.id }}')" class="form-check-input me-2"> <!-- Changed input type to checkbox -->
+                    {{ task.description }}
+                    <small class="text-muted">{{ task.created_at }}</small>
+                    <button onclick="mark_important('{{ task.id }}')" class="btn btn-important" style="float: right;">
+                        important<i class="fa-solid fa-star"></i>
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endblock content %}
+</body>
+</html>

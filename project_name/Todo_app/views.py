@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect
 
 # views.py
 from django.shortcuts import render, redirect
+
+from Todo_app.forms import TaskForm
 from .models import Task ,Group ,TaskList
 
 def home(request):
@@ -22,8 +24,17 @@ def home(request):
                   'tasks_Completed': tasks_Completed, 
                   'tasks_importnat': tasks_importnat })
     
-
-
+def important_tasks(request):
+    tasks_important = Task.objects.filter(important=True)
+    form = TaskForm()
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            important = form.cleaned_data['important']
+            Task.objects.create(description=description, important=important)
+            return redirect('important_tasks')
+    return render(request, 'Todo_app/important.html', {'tasks_important': tasks_important, 'form': form})
 
 def add_task2(request):
     if request.method == 'POST':
@@ -96,6 +107,7 @@ def delete_group(request, group_id):
         group = get_object_or_404(Group, id=group_id)
         group.delete()
         return redirect('home')
+
     
 
 def edit_tasklist(request, tasklist_id):
