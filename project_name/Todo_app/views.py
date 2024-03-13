@@ -142,20 +142,20 @@ def delete_tasklist(request, tasklist_id):
     # if request.method == 'POST':
     #     task.delete()
     # return redirect('home') 
-def edit_task(request, group_id, list_id, task_id):
-    task = Task.objects.get(id=task_id)
-    if request.method == 'POST':
-        task.description = request.POST.get('description')
-        task.completed = request.POST.get('completed', False)
-        task.save()
-        return redirect('home')  # Redirect to appropriate page
-    return render(request, 'edit_task.html', {'task': task})
+# def edit_task(request, group_id, list_id, task_id):
+#     task = Task.objects.get(id=task_id)
+#     if request.method == 'POST':
+#         task.description = request.POST.get('description')
+#         task.completed = request.POST.get('completed', False)
+#         task.save()
+#         return redirect('home')  # Redirect to appropriate page
+#     return render(request, 'edit_task.html', {'task': task})
 
-def delete_task(request, group_id, list_id, task_id):
-    task = Task.objects.get(id=task_id)
-    if request.method == 'POST':
-        task.delete()
-        return redirect('home')  # Redirect to appropriate page
+# def delete_task(request, group_id, list_id, task_id):
+#     task = Task.objects.get(id=task_id)
+#     if request.method == 'POST':
+#         task.delete()
+#         return redirect('home')  # Redirect to appropriate page
 
 def create_task(request, task_list_id):
     task_list = TaskList.objects.get(id=task_list_id)
@@ -169,3 +169,19 @@ def mark_as_incomplete(request, task_id):
     task.completed = False
     task.save()
     return redirect('home')
+
+
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+
+        task.description = request.POST['description']
+        task.save()
+        return redirect('home')  
+
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+ 
+        task.delete()
+        return redirect('home') 

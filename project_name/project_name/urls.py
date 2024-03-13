@@ -42,5 +42,7 @@ urlpatterns = [
     path('group/<int:group_id>/list/<int:list_id>/task/<int:task_id>/delete/', delete_task, name='delete_task'),
     path('create-task/<int:id>/', create_task, name='create_task'),
     path('mark-as-incomplete/<int:task_id>/', mark_as_incomplete, name='mark_as_incomplete'),
+    path('task/<int:task_id>/edit/', edit_task, name='edit_task'),
+    path('task/<int:task_id>/delete/', delete_task, name='delete_task'),
 
 ]

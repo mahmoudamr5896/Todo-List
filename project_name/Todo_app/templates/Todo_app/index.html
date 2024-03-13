@@ -277,16 +277,40 @@
             <div class="" id="taskCollapse">
                 <ul id="taskList" class="list-group">
                     {% for task in tasks %}
-                        <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
-                            <input type="radio" onclick="markAsComplete('{{ task.id }}')" class="form-check-input me-2">
-                            {{ task.description }}
-                            <small class="text-muted">{{ task.created_at }}</small>
-                            <button onclick="mark_important('{{ task.id }}')" class="btn btn-important" style="float: right;">
-                                important<i class="fa-solid fa-star"></i>
-                            </button>
-                        </li>
+                    <li class="task-list-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}">
+                        <input type="radio" onclick="markAsComplete('{{ task.id }}')" class="form-check-input me-2">
+                        {{ task.description }}
+                        <small class="text-muted">{{ task.created_at }}</small>
+                        <button onclick="mark_important('{{ task.id }}')" class="btn btn-important" style="float: right;">
+                            important<i class="fa-solid fa-star"></i>
+                        </button>
+                        <span data-bs-toggle="collapse" data-bs-target="#EditTaskCollapse{{ task.id }}" aria-expanded="false" aria-controls="EditTaskCollapse{{ task.id }}">Edit</span>
+                        <span data-bs-toggle="collapse" data-bs-target="#DeleteTaskCollapse{{ task.id }}" aria-expanded="false" aria-controls="DeleteTaskCollapse{{ task.id }}">Del</span>
+                    </li>
+                    <form method="post" class="collapse" id="EditTaskCollapse{{ task.id }}" action="{% url 'edit_task' task.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="description" value="{{ task.description }}">
+                        <button type="submit">Save</button>
+                    </form>
+                    <form method="post" class="collapse" id="DeleteTaskCollapse{{ task.id }}" action="{% url 'delete_task' task.id %}">
+                        {% csrf_token %}
+                        <p>Are you sure you want to delete "{{ task.description }}"?</p>
+                        <button type="submit">Delete</button>
+                    </form>
                     {% endfor %}
                 </ul>
+                <!-- {% for task in tasks %}
+                <form method="post" class="collapse" id="EditTaskCollapse{{ task.id }}">
+                    {% csrf_token %}
+                    <input type="text" name="description" value="{{ task.description }}">
+                    <button type="submit">Save</button>
+                </form>
+                <form method="post" class="collapse" id="DeleteTaskCollapse{{ task.id }}">
+                    {% csrf_token %}
+                    <p>Are you sure you want to delete "{{ task.description }}"?</p>
+                    <button type="submit">Delete</button>
+                </form>
+                {% endfor %} -->
             </div>
             
         </div>
