@@ -105,7 +105,6 @@
     <!-- Navigation bar -->
    <nav class="navbar navbar-expand-lg navbar-light bg-beige" id="navBar">
     <div class="container">
-<<<<<<< HEAD
         <a class="navbar-brand" href="#">To Do</a>
         <button class="navbar-toggler" type="button" onclick="openNav()">
             <span class="navbar-toggler-icon"></span>
@@ -183,7 +182,6 @@
                         <button type="submit" class="btn btn-primary">Create</button>
                     </form>
                 </div>
-=======
         <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
            + Add a task
         </h6>
@@ -192,7 +190,6 @@
             <div style="position: relative;">
                 <textarea id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;"></textarea>
                 <button type="submit" class="btn btn-primary" style="position: absolute; top: 0; right: 5px; height: 100%; min-width: 50px;">+</button>
->>>>>>> Mahmoud-Amr-Hassan
             </div>
         </div>
     </div>
@@ -416,7 +413,7 @@
                 <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
                    + Add a task
                 </h6>
-                <form method="POST" action="{% url 'add_task' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
+                <form method="POST" action="{% url 'add_task2' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
                     {% csrf_token %}        
                     <div style="position: relative;">
                         <input id="description" name="description" required class="form-control mb-3" style="padding-right: 40px;" placeholder="Add a task">
@@ -470,7 +467,6 @@
  
 
 
-<<<<<<< HEAD
     </div>     
 <div class="container-fluid">
         <button class="btn btn-white"
@@ -483,34 +479,6 @@
         </button>
         <div class="collapse" id="createGroupForm">
             <form method="post" action="{% url 'create_group' %}">
-=======
-    </div> 
-<<<<<<< HEAD
-   
-   
-    <script>
-    function openNav() {
-            document.getElementById("sidebar").style.width = "250px";  
-            document.getElementById("main-content").style.marginLeft = "250px";
-            document.getElementById("main-content").style.width = "calc(100% - 250px)";
-            document.getElementById("navBar").style.marginLeft = "250px";
-            document.getElementById("navBar").style.width = "calc(100% - 250px)";
-        }
-
-        function closeNav() {
-            document.getElementById("sidebar").style.width = "0"; 
-            document.getElementById("main-content").style.marginLeft = "10%";
-            document.getElementById("main-content").style.width = "100%";
-            document.getElementById("navBar").style.marginLeft = "0"; 
-            document.getElementById("navBar").style.width = "100%"; 
-        }
-        
-
-=======
-    <div>
-        <h2>Create Group</h2>
-        <form method="post" action="{% url 'create_group' %}">
->>>>>>> mai
                 {% csrf_token %}
                 <label for="group_name">Group Name:</label>
                 <input type="text" id="group_name" name="name" required><br>
@@ -648,8 +616,7 @@
         {% endfor %}
     </div>
 </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
+    <!-- <script>
         function markAsIncomplete(taskId) {
             fetch(`/mark-as-incomplete/${taskId}/`, {
             })
@@ -690,6 +657,8 @@
             fetch('/mark_important/' + taskId + '/')
                 .then(response => {
                     if (response.ok) {
+                        location.reload();
+
                         console.log('Task marked as important successfully');
                     } else {
                         console.error('Failed to mark task as important');
@@ -699,7 +668,7 @@
                     console.error('Error:', error);
                 });
         }
-    </script>
+    </script> -->
     <!-- <div id="accordion">
         {% for group in Group %}
             <div class="accordion-item">
@@ -944,12 +913,9 @@
                 </div>
             </div>
         {% endfor %}
-<<<<<<< HEAD
-    </div> -->
-=======
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
+    </div> 
+    </div>-->
+        <script>
         function markAsIncomplete(taskId) {
             fetch(`/mark-as-incomplete/${taskId}/`, {
             })
@@ -965,7 +931,6 @@
             });
         }
 
->>>>>>> Mahmoud-Amr-Hassan
         function markAsComplete(taskId) {
             var taskElement = document.getElementById('task' + taskId);
             taskElement.classList.add('completed');
@@ -985,12 +950,11 @@
                     console.error('Error:', error);
                 });
         }
-        
-        
         function mark_important(taskId) {
             fetch('/mark_important/' + taskId + '/')
                 .then(response => {
                     if (response.ok) {
+                        location.reload();
                         console.log('Task marked as important successfully');
                     } else {
                         console.error('Failed to mark task as important');
@@ -1000,8 +964,8 @@
                     console.error('Error:', error);
                 });
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
->>>>>>> mai
+    </script>  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
 </body>
 </html>

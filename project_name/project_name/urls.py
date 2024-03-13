@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path
 from Todo_app import views
 
-from Todo_app.views import create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2, mark_as_incomplete ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
+from Todo_app.views import add_task, create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2, mark_as_incomplete ,task_list ,mark_task_as_completed,mark_task_as_important,create_group
 
 urlpatterns = [
     path("admin/", admin.site.urls),

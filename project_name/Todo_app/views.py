@@ -85,14 +85,14 @@ def create_tasklist(request):
         return redirect('home')
     
 
-# def add_task(request, task_list_id):
-#     if request.method == 'POST':
-#         description = request.POST.get('description')
-#         Task.objects.create(description=description, task_list_id=task_list_id)
-#         return redirect('home')  # Redirect to the homepage or any other page
-#     else:
-#         # Handle GET request if needed
-#         pass
+def add_task(request, task_list_id):
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        Task.objects.create(description=description, task_list_id=task_list_id)
+        return redirect('home')  # Redirect to the homepage or any other page
+    else:
+        # Handle GET request if needed
+        pass
 
 from django.shortcuts import get_object_or_404, redirect
 from .models import Group
@@ -132,22 +132,24 @@ def delete_tasklist(request, tasklist_id):
     return redirect('home')  
 
 
-# def edit_task(request, task_id):
-#     task = get_object_or_404(Task, id=task_id)
-#     if request.method == 'POST':
-#         description = request.POST.get('description')
-#         completed = request.POST.get('completed')  # Assuming you have a checkbox or similar for completion status
-#         if description is not None:
-#             task.description = description
-#             task.completed = completed
-#             task.save()
-#     return redirect('home')  # Redirect to the homepage or any other page
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        completed = request.POST.get('completed')  # Assuming you have a checkbox or similar for completion status
+        if description is not None:
+            task.description = description
+            task.completed = completed
+            task.save()
+    return redirect('home')  # Redirect to the homepage or any other page
 
 # def delete_task(request, task_id):
     # task = get_object_or_404(Task, id=task_id)
     # if request.method == 'POST':
     #     task.delete()
     # return redirect('home') 
+
+
 def edit_task(request, group_id, list_id, task_id):
     task = Task.objects.get(id=task_id)
     if request.method == 'POST':
