@@ -7,8 +7,8 @@
 📷 Check out the screenshot below to see the app in action!
 
 ![Screenshot from 2024-04-02 22-05-19](https://github.com/mahmoudamr5896/Todo-List/assets/100859586/69b02bec-d87f-483c-8d8e-5db9f2cf8a6a)
-![Screenshot from 2024-04-02 22-05-19](https://github.com/mahmoudamr5896/Todo-List/assets/100859586/bf92ac93-6e17-4209-922c-29bf15ef721e)
-![Screenshot from 2024-04-02 22-05-19](https://github.com/mahmoudamr5896/Todo-List/assets/100859586/d3e9305b-38ff-446b-968f-2d3cc4797daf)
+![Screenshot from 2024-04-02 22-05-24](https://github.com/mahmoudamr5896/Todo-List/assets/100859586/0469c903-c9da-4911-8427-f2ebb9153cc5)
+![Screenshot from 2024-04-02 22-05-34](https://github.com/mahmoudamr5896/Todo-List/assets/100859586/eabb57f9-f506-43fa-a33a-39c3a37c428e)
 
 
 🔗 Want to try it out? Visit [insert link to your todo list app] to explore the app yourself!
