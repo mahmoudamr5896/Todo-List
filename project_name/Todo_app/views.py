@@ -11,6 +11,8 @@ from Todo_app.forms import TaskForm
 from .models import Task ,Group ,TaskList
 
 def home(request):
+    task_lists = TaskList.objects.filter(group__isnull=True)
+    # Pass the filtered task lists to the template context
     tasks_Completed = Task.objects.filter(completed=True)
     tasks = Task.objects.filter(completed=False)
     tasks_importnat = Task.objects.filter(important=True)
@@ -19,7 +21,8 @@ def home(request):
     print(tasks_importnat)
     return render(request, 'Todo_app/index.html',
                   {'tasks': tasks ,
-                   'Group':group,
+                   'Group':group,        
+                   'task_lists': task_lists,
                    'List':List,
                   'tasks_Completed': tasks_Completed, 
                   'tasks_importnat': tasks_importnat })
@@ -36,6 +39,19 @@ def important_tasks(request):
             return redirect('important_tasks')
     return render(request, 'Todo_app/important.html', {'tasks_important': tasks_important, 'form': form})
 
+
+def Planned_tasks(request):
+    tasks_important = Task.objects.filter(important=True)
+    form = TaskForm()
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            important = form.cleaned_data['important']
+            Task.objects.create(description=description, important=important)
+            return redirect('Planned_tasks')
+    return render(request, 'Todo_app/Planned.html', {'tasks_important': tasks_important, 'form': form})
+
 def add_task2(request):
     if request.method == 'POST':
         description = request.POST.get('description')
@@ -45,10 +61,15 @@ def add_task2(request):
     return render(request, 'Todo_app/add_task.html')
 
 
-def task_list(request):
-    tasks = Task.objects.all()
-    return render(request, 'Todo_app/task_list.html', {'tasks': tasks})
-
+def task_list(request, task_list_id):
+    tasks = Task.objects.filter(task_list_id=task_list_id,completed=False)
+    tasks_compelte = Task.objects.filter(task_list_id=task_list_id,completed=True)
+    context = {
+        'tasks_compelte':tasks_compelte,
+        'tasks': tasks,
+        'task_list_id': task_list_id,  # Pass the task list ID to the template context
+    }
+    return render(request, 'Todo_app/task_list.html', context)
 
 def mark_task_as_completed(request, task_id):
     task = Task.objects.get(id=task_id)
@@ -78,15 +99,24 @@ def create_tasklist(request):
         return redirect('home')
     
 
+from django.shortcuts import render, redirect
+from .models import TaskList
+
+def create_tasklistGroup(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        TaskList.objects.create(name=name)
+        return redirect('home')  # Assuming 'home' is the name of your home view
+
+
 def add_task(request, task_list_id):
+    task_list = get_object_or_404(TaskList, id=task_list_id)
     if request.method == 'POST':
         description = request.POST.get('description')
-        Task.objects.create(description=description, task_list_id=task_list_id)
-        return redirect('home')  # Redirect to the homepage or any other page
-    else:
-        # Handle GET request if needed
-        pass
+        Task.objects.create(description=description, task_list=task_list)
+        return redirect('task_list', task_list_id=task_list_id)  
 
+    
 from django.shortcuts import get_object_or_404, redirect
 from .models import Group
 
@@ -126,6 +156,38 @@ def delete_tasklist(request, tasklist_id):
     return redirect('home')  
 
 
+
+def create_task(request, task_list_id):
+    task_list = TaskList.objects.get(id=task_list_id)
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        Task.objects.create(task_list=task_list, description=description)
+        return redirect('home')  
+
+def mark_as_incomplete(request, task_id):
+    task = Task.objects.get(id=task_id)
+    task.completed = False
+    task.save()
+    return redirect('home')
+
+
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+
+        task.description = request.POST['description']
+        task.save()
+        return redirect('home')  
+
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+ 
+        task.delete()
+        return redirect('home') 
+    
+
+
 # def edit_task(request, task_id):
 #     task = get_object_or_404(Task, id=task_id)
 #     if request.method == 'POST':
@@ -156,32 +218,3 @@ def delete_tasklist(request, tasklist_id):
 #     if request.method == 'POST':
 #         task.delete()
 #         return redirect('home')  # Redirect to appropriate page
-
-def create_task(request, task_list_id):
-    task_list = TaskList.objects.get(id=task_list_id)
-    if request.method == 'POST':
-        description = request.POST.get('description')
-        Task.objects.create(task_list=task_list, description=description)
-        return redirect('home')  
-
-def mark_as_incomplete(request, task_id):
-    task = Task.objects.get(id=task_id)
-    task.completed = False
-    task.save()
-    return redirect('home')
-
-
-def edit_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    if request.method == 'POST':
-
-        task.description = request.POST['description']
-        task.save()
-        return redirect('home')  
-
-def delete_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    if request.method == 'POST':
- 
-        task.delete()
-        return redirect('home') 

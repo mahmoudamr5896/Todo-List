@@ -18,19 +18,22 @@ from asyncio import create_task
 from django.contrib import admin
 from django.urls import path
 
-from Todo_app.views import create_tasklist, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2, mark_as_incomplete ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
+from Todo_app.views import Planned_tasks, create_tasklist, create_tasklistGroup, delete_group, delete_task, delete_tasklist, edit_group, edit_task, edit_tasklist, home , add_task2, mark_as_incomplete ,task_list ,mark_task_as_completed,mark_task_as_important,create_group,add_task
 from Todo_app import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", home, name='home'), 
     path('add_task2/', add_task2, name='add_task2'),
-    path('task_list/', task_list, name='task_list'),
+    path('task_list/<int:task_list_id>/', views.task_list, name='task_list'),
     path('important/', views.important_tasks, name='important_tasks'),
-    path('mark_completed/<int:task_id>/', mark_task_as_completed, name='mark_completed'),
+    path('Planned/', views.Planned_tasks, name='Planned_tasks'),
+    path('mark_completed/<int:task_id>/', views.mark_task_as_completed, name='mark_completed'),
+    path('mark_task_as_completed/<int:task_id>/', views.mark_task_as_completed, name='mark_task_as_completed'),
     path('mark_important/<int:task_id>/', mark_task_as_important, name='mark_importan'),
     path('create-group/', create_group, name='create_group'),
     path('create-tasklist/', create_tasklist, name='create_tasklist'),
+    path('create_tasklistGroup/', create_tasklistGroup, name='create_tasklistGroup'),
     path('add_task/<int:task_list_id>/', add_task, name='add_task'),
     path('edit-group/<int:group_id>/', edit_group, name='edit_group'),
     path('delete-group/<int:group_id>/', delete_group, name='delete_group'),

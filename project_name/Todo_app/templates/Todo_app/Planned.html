@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Important Tasks</title>
+    <title>Planned Tasks</title>
     <!-- Add any necessary CSS links or styles here -->
 </head>
 <body>
     {% block content %}
     <div class="container">
             <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
-        + Add an important task
+        + Add an Planned task
     </h6>
     <form method="POST" action="{% url 'important_tasks' %}" style="width: 100%; margin: 0 auto;" class="collapse" id="taskCollapse1">
         {% csrf_token %}        
@@ -23,7 +23,7 @@
     </form>
 
     <div class="container mt-5"> <!-- Added mt-5 class here -->
-        <h2>Important Tasks</h2>
+        <h2>Planned Tasks</h2>
         <ul class="list-group"> <!-- Added list-group class here -->
             {% for task in tasks_important %}
                 <li class="list-group-item {% if task.completed %}completed{% endif %}" id="task{{ task.id }}"> <!-- Changed class name to list-group-item -->
@@ -37,6 +37,7 @@
         </ul>
     </div>
     </div>
+
     {% endblock content %}
 </body>
 </html>

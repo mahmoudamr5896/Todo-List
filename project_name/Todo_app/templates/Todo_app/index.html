@@ -7,8 +7,10 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-BsbJMDJjm0M8eLAk+rBL6U1krC4r30SwUmCpzYg3fmSpLhHDyRXWgVmzxF2rLo8E" crossorigin="anonymous">
-    
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-BsbJMDJjm0M8eLAk+rBL6U1krC4r30SwUmCpzYg3fmSpLhHDyRXWgVmzxF2rLo8E" crossorigin="anonymous"> -->
+    <!-- In your HTML template -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <style>
         #sidebar {
             height: 100%;
@@ -84,6 +86,29 @@
         #main-content {
             transition: margin-left 0.5s, width 0.5s;
         }
+        
+        #Create_g {
+            position: relative;
+            display: inline-block;
+          }
+          
+          #Create_g:hover::before {
+            content: 'Create Group';
+            position: absolute;
+            top: -30px; /* Adjust the distance from the element */
+            left: 50%; /* Adjust the horizontal position */
+            transform: translateX(-50%);
+            background-color: #f0f0f0; /* Background color of the tooltip */
+            color: #000; /* Text color */
+            padding: 5px 10px; /* Padding of the tooltip */
+            border-radius: 5px; /* Border radius */
+            width: auto; /* Width of the tooltip */
+            white-space: nowrap; /* Prevent wrapping of text */
+          }
+          /* Hide the ellipsis icon initially */
+
+
+          
     </style>
 </head>
 <body>
@@ -102,166 +127,232 @@
         </div>
     </nav>
     <!-- Sidebar -->
-    <div id="sidebar">
+    <div class="container" id="sidebar" style="width: 300px;">
         <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
-        <a href="{% url 'important_tasks' %}"> Important </a>
-        <a href="{% url 'home' %}"> Tasks</a>
+        <a href="{% url 'home' %}">
+            <i class="fas fa-sun  me-2"></i>
+            My day
+        </a>
+        <a href="{% url 'important_tasks' %}">
+            <i class="far fa-star  me-2"></i> 
+             Important 
+        </a>
+        <a href="{% url 'Planned_tasks' %}">
+            <i class="far fa-calendar-alt  me-2"></i>
+             Planned
+        </a>
+        <a href="{% url 'home' %}">
+            <i class="fas fa-user me-2"></i>
+             Assign to me
+        </a>
+        <a href="{% url 'home' %}">
+            <i class="fas fa-home  me-2"></i>
+             Tasks
+        </a>
+<br>
+<br>
+<br>
+<br>
+<br>
         <div class="container-fluid">
-            <button class="btn btn-white"
-            type="button" 
-            data-bs-toggle="collapse"
-            data-bs-target="#createGroupForm"
-            aria-expanded="false" 
-            aria-controls="createGroupForm">
-            Create Group
-            </button>
-            <div class="collapse" id="createGroupForm">
-                <form method="post" action="{% url 'create_group' %}">
-                    {% csrf_token %}
-                    <label for="group_name">Group Name:</label>
-                    <input type="text" id="group_name" name="name" required><br>
-                    <button type="submit" class="btn">Create Group</button>
-                </form>
-          </div>
+            <div class="container border">
+                <button style="float: right;" class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#createGroupForm" aria-expanded="false" id="Create_g" aria-controls="createGroupForm">
+                    <img src="https://avatars.githubusercontent.com/u/79923906?s=200&v=4" width="40px" >
+                </button>
+                <div class="collapse" id="createGroupForm">
+                    <form method="post" action="{% url 'create_group' %}">
+                        {% csrf_token %}
+                        <label for="group_name"></label>
+                        <input type="text" id="group_name" name="name" required><br>
+                        <!-- <button type="submit" class="btn">Create Group</button> -->
+                    </form>
+                </div> 
+                <div style="float: left;" class="d-flex align-items-center">
+                    <p class="text-primary pt-3 " data-bs-toggle="collapse" data-bs-target="#createGroupForm1" aria-expanded="false"  aria-controls="createGroupForm1">
+                    <i class="fas fa-plus me-3"></i>
+                        New List
+                    </p>
+                </div>
+                <div class="collapse" id="createGroupForm1">
+                    <form method="post"  action="{% url 'create_tasklistGroup' %}">
+                        {% csrf_token %}
+                        <input type="text" id="name" name="name" required><br>
+                        <button type="submit" class="btn">Create List</button>
+                    </form>
+                </div> 
+            </div>
+            
+
         <div id="accordion"  >
             {% for group in Group %}
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading{{ group.id }}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroup{{ group.id }}" aria-expanded="true" aria-controls="collapseGroup{{ group.id }}">
-                            {{ group.name }}
+            <div class="accordion-item">
+                <h2 class="accordion-header mt-0 p-0" id="heading{{ group.id }}">
+                    <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#collapseGroup{{ group.id }}" aria-expanded="true" aria-controls="collapseGroup{{ group.id }}">
+                       <img src="https://cdn1.iconfinder.com/data/icons/symbols-symbols-2-add-on-vol-2/48/v-52-512.png" style="width: 50px;">
+                       <div class="group-name-container">
+                        <span class="group-name">{{ group.name }}</span>
+                        <button type="button" class="btn dropdown-toggle ellipsis-icon-btn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h" style="font-size: smaller;"></i>
                         </button>
-                        <div>
-                            <!-- <a href="{% url 'edit_group' group.id %}" class="btn btn-primary">Edit</a> -->
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                  Actions
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Edit</button></li>
-                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Delete</button></li>
-                                    <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Create Task List</button></li>
-    
-                                </ul>
-                              </div>
-                              <div class="collapse" id="deleteGroupCollapse{{ group.id }}">
-                                <div class="card card-body">
-                                    <p>Are you sure you want to delete this group?</p>
-                                    <form method="post" action="{% url 'delete_group' group.id %}">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Cancel</button>
-                                    </form>
-                                </div>
-                              </div>
-                              <div class="collapse" id="editGroupCollapse{{ group.id }}">
-                                <div class="card card-body">
-                                    <form method="post" action="{% url 'edit_group' group.id %}">
-                                        {% csrf_token %}
-                                        <div class="mb-3">
-                                            <label for="groupName" class="form-label">Group Name</label>
-                                            <input type="text" class="form-control" id="groupName" name="name" value="{{ group.name }}">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Cancel</button>
-                                    </form>
-                                </div>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Edit</button></li>
+                            <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Delete</button></li>
+                            <li><button class="dropdown-item" type="button" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Create Task List</button></li>
+                        </ul>
+                    </div>
+
+                    
+                  
+                    <div>
+                        <!-- <a href="{% url 'edit_group' group.id %}" class="btn btn-primary">Edit</a> -->
+                </h2>
+                          <div class="collapse" id="deleteGroupCollapse{{ group.id }}">
+                            <div class="card card-body">
+                                <p>Are you sure you want to delete this group?</p>
+                                <form method="post" action="{% url 'delete_group' group.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteGroupCollapse{{ group.id }}">Cancel</button>
+                                </form>
                             </div>
-                            <div class="collapse" id="createTaskListCollapse{{ group.id }}">
-                                <div class="card card-body">
-                                    <form method="post" action="{% url 'create_tasklist' %}">
-                                        {% csrf_token %}
-                                        <div class="mb-3">
-                                            <label for="taskListName" class="form-label">Task List Name</label>
-                                            <input type="text" class="form-control" id="taskListName" name="name">
-                                        </div>
-                                        <input type="hidden" name="group" value="{{ group.id }}">
-                                        <button type="submit" class="btn btn-primary">Create</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Cancel</button>
-                                    </form>
-                                </div>
+                          </div>
+                          <div class="collapse" id="editGroupCollapse{{ group.id }}">
+                            <div class="card card-body">
+                                <form method="post" action="{% url 'edit_group' group.id %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="groupName" class="form-label">Group Name</label>
+                                        <input type="text" class="form-control" id="groupName" name="name" value="{{ group.name }}">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editGroupCollapse{{ group.id }}">Cancel</button>
+                                </form>
                             </div>
-                    </h2>
-                    <div id="collapseGroup{{ group.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ group.id }}" data-bs-parent="#accordion">
-                        <div class="accordion-body">
-                            <ul class="list-group">
-                                {% for task_list in group.tasklist_set.all %}
-                                    <li class="list-group-item">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTaskList{{ task_list.id }}" aria-expanded="false" aria-controls="collapseTaskList{{ task_list.id }}">
-                                            {{ task_list.name }}
-                                        </button>
-                                        <div>
-                                            <div class="dropdown">
-                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    Actions
-                                                </button>
-                                                    <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
-                                                        <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Edit</button></li>
-                                                        <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Delete</button></li>
-                                                    </ul>   
-                                            </div>  
-                                            <div class="collapse" id="editTaskListCollapse{{ task_list.id }}">
-                                                <div class="card card-body">
-                                                    <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
-                                                        {% csrf_token %}
-                                                        <div class="mb-3">
-                                                            <label for="taskListName" class="form-label">Task List Name</label>
-                                                            <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
-                                                        </div>
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Cancel</button>
-                                                    </form>
-                                                </div>
-                                            </div>                 
-                                            <div class="collapse" id="deleteTaskListCollapse{{ task_list.id }}">
-                                                <div class="card card-body">
-                                                    <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
-                                                    <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Cancel</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-    <!--                                                              
-          
-                                            <div class="modal fade" id="createTaskModal{{ task_list.id }}" tabindex="-1" aria-labelledby="createTaskModalLabel{{ task_list.id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="createTaskModalLabel{{ task_list.id }}">Create New Task</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form method="post" action="{% url 'add_task' task_list.id %}">
-                                                                {% csrf_token %}
-                                                                <div class="mb-3">
-                                                                    <label for="taskDescription" class="form-label">Task Description:</label>
-                                                                    <input type="text" class="form-control" id="taskDescription" name="description" required>
-                                                                </div>
-                                                                <button type="submit" class="btn btn-primary">Add Task</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
                         </div>
+                        <div class="collapse" id="createTaskListCollapse{{ group.id }}">
+                            <div class="card card-body">
+                                <form method="post" action="{% url 'create_tasklist' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="taskListName" class="form-label">Task List Name</label>
+                                        <input type="text" class="form-control" id="taskListName" name="name">
+                                    </div>
+                                    <input type="hidden" name="group" value="{{ group.id }}">
+                                    <button type="submit" class="btn btn-primary">Create</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#createTaskListCollapse{{ group.id }}">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                <div id="collapseGroup{{ group.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ group.id }}" data-bs-parent="#accordion">
+                    <div class="accordion-body">
+                        <ul class="list-group">
+                            {% for task_list in group.tasklist_set.all %}
+                                <li class="list-group-item">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"  data-bs-target="#collapseTaskList{{ task_list.id }}" aria-expanded="false" aria-controls="collapseTaskList{{ task_list.id }}">
+                                      <a href="{% url 'task_list' task_list.id %}">
+                                         <i class="fas fa-list me-2"></i>
+                                        {{ task_list.name }}
+                                      </a>  
+                                    </button>
+                                    <!-- <button class="accordion-button" type="button" onclick="toggleTasks('{{ task_list.id }}')">
+                                        <i class="fas fa-list me-2"></i>
+                                        {{ task_list.name }}
+                                    </button> -->
+                                    <div>
+                                        <div class="dropdown">
+                                            <button class="btn  dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-h" style="font-size: smaller;"></i>
+                                            </button>
+                                                <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
+                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Edit</button></li>
+                                                    <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Delete</button></li>
+                                                </ul>   
+                                        </div>  
+                                        <div class="collapse" id="editTaskListCollapse{{ task_list.id }}">
+                                            <div class="card card-body">
+                                                <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                                        <label for="taskListName" class="form-label">Task List Name</label>
+                                                        <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Cancel</button>
+                                                </form>
+                                            </div>
+                                        </div>                 
+                                        <div class="collapse" id="deleteTaskListCollapse{{ task_list.id }}">
+                                            <div class="card card-body">
+                                                <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
+                                                <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Cancel</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
+        {% endfor %}
+        <br><br><br>
+        {% if task_lists %}
+            <ul>
+        {% for task_list in task_lists %}
+           <a href="{% url 'task_list' task_list.id %}" style="display: inline-block;"><p> <i class="fas fa-list me-3"></i>
+                {{ task_list.name }}
+               </p></a>
+        <div class="dropdown">
+            <button class="btn  dropdown-toggle" type="button" id="taskListActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-h" style="font-size: smaller;"></i>
+            </button>
+                <ul class="dropdown-menu" aria-labelledby="taskListActionsDropdown">
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse1{{ task_list.id }}">Edit</button></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse1{{ task_list.id }}">Delete</button></li>
+                </ul>   
+        </div>  
+        <div class="collapse" id="deleteTaskListCollapse1{{ task_list.id }}">
+            <div class="card card-body">
+                <p>Are you sure you want to delete the task list "{{ task_list.name }}"?</p>
+                <form method="post" action="{% url 'delete_tasklist' task_list.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#deleteTaskListCollapse{{ task_list.id }}">Cancel</button>
+                </form>
+            </div>
         </div>
+        <div class="collapse" id="editTaskListCollapse1{{ task_list.id }}">
+            <div class="card card-body">
+                <form method="post" action="{% url 'edit_tasklist' task_list.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="taskListName" class="form-label">Task List Name</label>
+                        <input type="text" class="form-control" id="taskListName{{ task_list.id }}" name="name" value="{{ task_list.name }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#editTaskListCollapse{{ task_list.id }}">Cancel</button>
+                </form>
+            </div>
+        </div>  
+        {% endfor %}
+             </ul>
+         {% endif %}
+     </div>
+         </div>
+        
     </div>
-    </div>
-    <div class="container"  id="main-content">
+ 
+    {% block content %}
+   <div id="Data" class="container mt-3"  id="main-content">
         <button class="btn btn-primary" onclick="openNav()">
             <i class="fas fa-bars"></i>
         </button>
-        <span>Welcome<span/>
-    <div/>
-    {% block content %}
+        <span>Welcome</span>
+    </div>
     <div class="container">
         <h6 class="mt-5 border text-start fst-italic text-primary p-2" data-bs-toggle="collapse" href="#taskCollapse1" aria-expanded="false" aria-controls="taskCollapse1">
            + Add a task
@@ -282,8 +373,12 @@
                         {{ task.description }}
                         <small class="text-muted">{{ task.created_at }}</small>
                         <button onclick="mark_important('{{ task.id }}')" class="btn btn-important" style="float: right;">
-                            important<i class="fa-solid fa-star"></i>
-                        </button>
+                            {% if task.important %}
+                                <i class="fas fa-star" style="color: gold;"></i> 
+                            {% else %}
+                                <i class="far fa-star"></i> 
+                            {% endif %} 
+                            </button>                       
                         <span data-bs-toggle="collapse" data-bs-target="#EditTaskCollapse{{ task.id }}" aria-expanded="false" aria-controls="EditTaskCollapse{{ task.id }}">Edit</span>
                         <span data-bs-toggle="collapse" data-bs-target="#DeleteTaskCollapse{{ task.id }}" aria-expanded="false" aria-controls="DeleteTaskCollapse{{ task.id }}">Del</span>
                     </li>
@@ -329,15 +424,23 @@
         </ul>
         <ul id="completeList" class="list-group collapse" id="taskCollapse2"></ul>
     </ul>
-         </div>
+    </div>
     </div>     
     {% endblock content %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
+        function Showtasks_inlist(id){
+            document.getElementById('Data').innerHTML
+            =`
+            <div>${id}</div>
+            
+            `
 
+        }
+       
         function openNav() {
-            document.getElementById("sidebar").style.width = "250px";  
-            document.getElementById("main-content").style.marginLeft = "250px";
+            document.getElementById("sidebar").style.width = "300px";  
+            document.getElementById("main-content").style.marginLeft = "300px";
             document.getElementById("main-content").style.width = "calc(100% - 250px)";
             document.getElementById("navBar").style.marginLeft = "250px";
             document.getElementById("navBar").style.width = "calc(100% - 250px)";
@@ -387,8 +490,7 @@
                     console.error('Error:', error);
                 });
         }
-        
-        
+    
         function mark_important(taskId) {
             fetch('/mark_important/' + taskId + '/')
                 .then(response => {
@@ -404,7 +506,7 @@
                     console.error('Error:', error);
                 });
         }
+   
     </script>
-
 </body>
 </html>
